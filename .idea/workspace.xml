@@ -4,11 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1237da8c-d48a-4049-b376-7b095970cd53" name="Changes" comment="1st commit">
+    <list default="true" id="1237da8c-d48a-4049-b376-7b095970cd53" name="Changes" comment="Added PriceType enum and support for buy/sell price in calc_value()&#10;Added guards for setting session and database&#10;Added docs and some type hints&#10;Refactoring">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ItemRust.py" beforeDir="false" afterPath="$PROJECT_DIR$/ItemRust.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ItemRustDatabase.py" beforeDir="false" afterPath="$PROJECT_DIR$/ItemRustDatabase.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ItemRustDatabaseRecord.py" beforeDir="false" afterPath="$PROJECT_DIR$/ItemRustDatabaseRecord.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,13 +93,48 @@
       <option name="project" value="LOCAL" />
       <updated>1711238516669</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="name fix">
+      <option name="closed" value="true" />
+      <created>1711981669974</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1711981669975</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Added guard for loading from file, added has_record(), smalle fixes &amp; docs">
+      <option name="closed" value="true" />
+      <created>1711981713439</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1711981713439</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Added guard for loading from file, added has_record(), smalle fixes &amp; docs">
+      <option name="closed" value="true" />
+      <created>1711981720127</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1711981720127</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Added PriceType enum and support for buy/sell price in calc_value()&#10;Added guards for setting session and database&#10;Added docs and some type hints&#10;Refactoring">
+      <option name="closed" value="true" />
+      <created>1711981799447</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1711981799447</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="1st commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="1st commit" />
+    <MESSAGE value="name fix" />
+    <MESSAGE value="Added guard for loading from file, added has_record(), smalle fixes &amp; docs" />
+    <MESSAGE value="Added PriceType enum and support for buy/sell price in calc_value()&#10;Added guards for setting session and database&#10;Added docs and some type hints&#10;Refactoring" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added PriceType enum and support for buy/sell price in calc_value()&#10;Added guards for setting session and database&#10;Added docs and some type hints&#10;Refactoring" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

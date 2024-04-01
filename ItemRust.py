@@ -1,12 +1,12 @@
 import asyncio
 import json
 from datetime import datetime as dt, timedelta
+from enum import Enum
 
 import aiohttp
 
 from ItemRustDatabase import ItemRustDatabase
 from Result import Result
-from enum import Enum
 
 
 class ItemRust:
@@ -24,17 +24,17 @@ class ItemRust:
 
     @classmethod
     def set_session(cls, session):
-        if not isinstance(session,aiohttp.client.ClientSession):
-            raise AttributeError("Session has to be instance of ",aiohttp.client.ClientSession.__name__)
+        if not isinstance(session, aiohttp.client.ClientSession):
+            raise AttributeError("Session has to be instance of ", aiohttp.client.ClientSession.__name__)
         cls.session = session
 
     @classmethod
     def set_database(cls, database):
-        if not isinstance(database,ItemRustDatabase):
-            raise AttributeError("Database has to be instance of ",ItemRustDatabase.__name__)
+        if not isinstance(database, ItemRustDatabase):
+            raise AttributeError("Database has to be instance of ", ItemRustDatabase.__name__)
         cls.database: ItemRustDatabase = database
 
-    def __init__(self, name, quantity=1,price_rchshop=None, price_bet=None):
+    def __init__(self, name, quantity=1, price_rchshop=None, price_bet=None):
         """
 
         :param name: Name of an item (to be found through scmm api)
@@ -292,7 +292,7 @@ class ItemRust:
         return result
 
     def calc_value(self, price=None, quantity=None, price_type=PriceType.PRICE_BUY):
-        """ Calculate combined value of an item. If price is not None, returns value of an item modified by exchange factor.
+        """ Calculate value of an item. If price is not None, returns value of an item modified by exchange factor.
 
         :param price: [optional] price in USD (e.g. 12.44), if None, it doesn't calculate exchange factor
         :type price: float | None
@@ -303,15 +303,13 @@ class ItemRust:
         :return: Value of an item
         :rtype: float
         """
-        #TODO change docs
 
         if quantity is None:
             quantity = self.quantity
         price_sm = self.price_sm / 100
 
         if price is None:
-            # We don't include any price in calculations
-            exchange_factor = 1
+            exchange_factor = 1  # We don't include any price in calculations
         elif not (isinstance(price, (int, float)) and price > 0):
             raise AttributeError("price has to be number greater than 0")
         elif price_type == self.PriceType.PRICE_BUY:
@@ -392,6 +390,3 @@ class ItemRust:
 
     def _fetch_offers_sp_async(self):
         raise NotImplementedError()
-
-
-
