@@ -60,7 +60,7 @@ class ItemRustDatabaseRecord:
         itemrust.timestamp = self.timestamp
 
         itemrust.all_success = True
-        itemrust.calc_phsm_vals()
+        itemrust.calc_phsm_values()
 
     def calc_expiry_date(self, min_expiry_time=2, high_value=2.5, max_expiry_time=7, low_value=1.5,
                          expire_on_friday=True):
