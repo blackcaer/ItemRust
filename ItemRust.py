@@ -6,6 +6,7 @@ import aiohttp
 
 from ItemRustDatabase import ItemRustDatabase
 from Result import Result
+from enum import Enum
 
 
 class ItemRust:
@@ -17,18 +18,38 @@ class ItemRust:
     session: aiohttp.ClientSession = None
     database: ItemRustDatabase = None
 
+    class PriceType(Enum):
+        PRICE_BUY = 1
+        PRICE_SELL = 2
+
     @classmethod
     def set_session(cls, session):
+        if not isinstance(session,aiohttp.client.ClientSession):
+            raise AttributeError("Session has to be instance of ",aiohttp.client.ClientSession.__name__)
         cls.session = session
 
     @classmethod
     def set_database(cls, database):
+        if not isinstance(database,ItemRustDatabase):
+            raise AttributeError("Database has to be instance of ",ItemRustDatabase.__name__)
         cls.database: ItemRustDatabase = database
 
-    def __init__(self, name, quantity=1,price_rchshop=None):
+    def __init__(self, name, quantity=1,price_rchshop=None, price_bet=None):
+        """
+
+        :param name: Name of an item (to be found through scmm api)
+        :type name: str
+        :param quantity: Quantity of an item
+        :type quantity: int
+        :param price_rchshop: Buy price in rustchance shop
+        :type price_rchshop: float | None
+        :param price_bet: Price on rustchance for coinflip/jackpot bets
+        :type price_bet: float | None
+        """
         self.name = name
         self.hash_name = None
         self.price_rchshop: float = price_rchshop
+        self.price_bet: float = price_bet
 
         self.all_success = False
 
@@ -73,8 +94,8 @@ class ItemRust:
         else:
             self.fromDB = False
 
-        phsm = await self.get_pricehistory_sm_async(100)
-        iteminfo = await self.get_item_info_async()  # TODO run concurrently
+        phsm = await self._fetch_pricehistory_sm_async(100)
+        iteminfo = await self._fetch_item_info_async()  # TODO run concurrently
         # shsm = await self.get_sale_offers_sm_async()
 
         if phsm.success:
@@ -84,6 +105,7 @@ class ItemRust:
         else:
             print(f"Price history errors ({self.name}): " + str(phsm.errors))
 
+        # DO NOT DELETE, might need that in the future
         """if shsm.success:
             self.sale_offers_sm = shsm.data
             print(f"Sales histogram success ({self.name})")
@@ -98,12 +120,12 @@ class ItemRust:
         if iteminfo.success:
             self.iteminfo = iteminfo.data
             print(f"Item info success ({self.name})")
-            self.price_sm = self.market_price("SteamCommunityMarket")
-            self.price_sp = self.market_price("Skinport")
+            self.price_sm = self.market_price_from_iteminfo("SteamCommunityMarket")
+            self.price_sp = self.market_price_from_iteminfo("Skinport")
             if self.price_sm is None and phsm.success:
                 # If there's no SteamCommunityMarket in iteminfo, happens sometimes
                 self.price_sm = phsm.data[len(phsm.data) - 1]["median"] * 100  # Converting to standard format
-                print(self.name + " no SteamCommunityMarket in iteminfo, assuming price_sm from price history")
+                print(f"No SteamCommunityMarket in iteminfo, assuming price_sm from price history ({self.name})")
 
             # Name with proper case
             self.hash_name = self.iteminfo["nameHash"].strip()
@@ -112,7 +134,7 @@ class ItemRust:
             print(f"Item info errors ({self.name}): " + str(iteminfo.errors))
 
         if phsm.success:
-            self.calc_phsm_vals()
+            self.calc_phsm_values()
 
         if phsm.success and iteminfo.success:  # and shsm.success
             self.all_success = True
@@ -127,10 +149,11 @@ class ItemRust:
 
         print()
 
-    def market_price(self, market_type="SteamCommunityMarket"):
+    def market_price_from_iteminfo(self, market_type="SteamCommunityMarket"):
         """ Returns market price from market_type using SCMM API.
+        self.iteminfo has to be fetched already. If it's None return None.
+        Returns None if specified market_type is not found
         Uses format 1234 (1234 == 12.34 USD)
-        Return None if specified market_type is not found
         """
         if self.iteminfo is None:
             return None
@@ -140,15 +163,13 @@ class ItemRust:
             return None
         return price
 
-        # deprecated, use async version
-
-    async def get_item_info_async(self):
+    async def _fetch_item_info_async(self):
         result = await self._get_json_async(self.API_ITEM_URL + self.name,
                                             params={},
                                             headers={})
         return result
 
-    async def get_pricehistory_sm_async(self, max_days):
+    async def _fetch_pricehistory_sm_async(self, max_days):
         """ GET steammarket pricehistory.
         Returns Result object with price history.
         max_days - The maximum number of days worth of sales history to return.
@@ -172,7 +193,7 @@ class ItemRust:
 
         return result
 
-    async def get_sale_offers_sm_async(self, count=100, start=0):
+    async def _fetch_sale_offers_sm_async(self, count=100, start=0):
         """ GET steammarket sales histogram
         Returns Result object with sales histogram
         """
@@ -270,31 +291,43 @@ class ItemRust:
             result = MIN_LIQVAL_VALUE
         return result
 
-    def calc_value(self, price_shop=None, quantity=None):
-        """ Calculate combined value of an item. If price_shop is not None, returns
-        value of an item modified by exchange factor.
-        price_shop - [optional] price in shop in USD (i.e. 12.44)
-        quantity - if quantity of items is set to None, defaults to self.quantity"""
+    def calc_value(self, price=None, quantity=None, price_type=PriceType.PRICE_BUY):
+        """ Calculate combined value of an item. If price is not None, returns value of an item modified by exchange factor.
+
+        :param price: [optional] price in USD (e.g. 12.44), if None, it doesn't calculate exchange factor
+        :type price: float | None
+        :param quantity: if quantity of items is set to None, defaults to self.quantity
+        :type quantity: int | None
+        :param price_type: determines whether price is for buying items or selling items
+        :type price_type: PriceType
+        :return: Value of an item
+        :rtype: float
+        """
+        #TODO change docs
+
         if quantity is None:
             quantity = self.quantity
         price_sm = self.price_sm / 100
-        if price_shop is None:
-            # We don't include price_rch in calculations
+
+        if price is None:
+            # We don't include any price in calculations
             exchange_factor = 1
-        elif isinstance(price_shop, (int, float)) and price_shop > 0:
-            exchange_factor = (price_sm / price_shop) ** 2  # Exchange factor
-        else:
-            raise AttributeError("price_rch has to be number greater than 0")
+        elif not (isinstance(price, (int, float)) and price > 0):
+            raise AttributeError("price has to be number greater than 0")
+        elif price_type == self.PriceType.PRICE_BUY:
+            exchange_factor = (price_sm / price) ** 2  # Exchange factor for e.g. site shop
+        elif price_type == self.PriceType.PRICE_SELL:
+            exchange_factor = (price / price_sm) ** 2  # Exchange factor for e.g. site games/deposits
 
         liqval = self.calc_liqval(quantity=quantity)
 
         return round(exchange_factor * liqval * price_sm ** (1 / 2), 2)
 
-    def calc_phsm_vals(self):
-        # Some of it is dependent on previously fetched values (price_sm in value)
+    def calc_phsm_values(self):
+        # Some of it is dependent on previously fetched values (price_sm for calc_value i.e.)
         self.perday = round(self.calc_sales_extrapolated_sm(30)["volume"] / 30, 2)
-        self.value = self.calc_value(price_shop=None)
-        self.value_single = self.calc_value(price_shop=None, quantity=1)
+        self.value = self.calc_value(price=None)
+        self.value_single = self.calc_value(price=None, quantity=1)
         self.liqval = self.calc_liqval()
         self.liqval_single = self.calc_liqval(quantity=1)
 
@@ -331,34 +364,34 @@ class ItemRust:
         errors.append("Attempt limit reached")
         return Result(success=False, errors=errors)
 
-    def _today_frac(self):
+    @staticmethod
+    def _today_frac():
         # Fraction of today, matters with low values of days_back
         return round(dt.now().hour / 24, 2)
 
-    def _parse_date(self, strdate):
+    @staticmethod
+    def _parse_date(strdate):
         return dt.strptime(strdate, "%Y-%m-%dT%H:%M:%S")
 
-
-
-    # ================================================= na kiedys:
-
-    def get_price_sm(self):
+    # ================================================= for the future:
+    def _fetch_price_sm_async(self):
         """ Current price sm (TODO'real price'?)"""
-        pass
+        raise NotImplementedError()
 
-    def get_offers_sm(self):
+    def _fetch_offers_sm_async(self):
         """ Nicely parsed get_sales_histogram?"""
-        pass
+        raise NotImplementedError()
 
-    def get_price_sp(self):
+    def _fetch_price_sp_async(self):
         """ Current price sp ('real price'?)"""
-        pass
+        raise NotImplementedError()
 
-    def get_pricehistory_sp(self):
+    def _fetch_pricehistory_sp_async(self):
         """  """
-        pass
+        raise NotImplementedError()
 
-    def get_offers_sp(self):
-        pass
+    def _fetch_offers_sp_async(self):
+        raise NotImplementedError()
+
 
 
