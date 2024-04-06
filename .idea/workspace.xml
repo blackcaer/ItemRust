@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1237da8c-d48a-4049-b376-7b095970cd53" name="Changes" comment="Added PriceType enum and support for buy/sell price in calc_value()&#10;Added guards for setting session and database&#10;Added docs and some type hints&#10;Refactoring">
+    <list default="true" id="1237da8c-d48a-4049-b376-7b095970cd53" name="Changes" comment="Cosmetics">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ItemRust.py" beforeDir="false" afterPath="$PROJECT_DIR$/ItemRust.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ItemRustDatabase.py" beforeDir="false" afterPath="$PROJECT_DIR$/ItemRustDatabase.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,18 +35,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "ignore_missing_gitignore": "true",
-    "last_opened_file_path": "C:/Users/kryspin/Documents/03 Steam projects/00_modules/ItemRust",
-    "settings.editor.selected.configurable": "preferences.keymap"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;ignore_missing_gitignore&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/kryspin/Documents/03 Steam projects/00_modules/ItemRust&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="ItemRust" />
@@ -125,7 +127,15 @@
       <option name="project" value="LOCAL" />
       <updated>1711981799447</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Cosmetics">
+      <option name="closed" value="true" />
+      <created>1711997012314</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1711997012314</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -134,16 +144,7 @@
     <MESSAGE value="name fix" />
     <MESSAGE value="Added guard for loading from file, added has_record(), smalle fixes &amp; docs" />
     <MESSAGE value="Added PriceType enum and support for buy/sell price in calc_value()&#10;Added guards for setting session and database&#10;Added docs and some type hints&#10;Refactoring" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added PriceType enum and support for buy/sell price in calc_value()&#10;Added guards for setting session and database&#10;Added docs and some type hints&#10;Refactoring" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/ItemRust.py</url>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="Cosmetics" />
+    <option name="LAST_COMMIT_MESSAGE" value="Cosmetics" />
   </component>
 </project>

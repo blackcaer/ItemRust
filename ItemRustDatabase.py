@@ -8,8 +8,16 @@ from ItemRustDatabaseRecord import ItemRustDatabaseRecord
 
 
 class ItemRustDatabase:
-    def __init__(self, filename):
+    def __init__(self, filename, do_not_expire=False):
+        """
+
+        :param filename: name of the database file
+        :type filename: str
+        :param do_not_expire: No record in the database will be treated as expired, useful for testing
+        :type do_not_expire: bool
+        """
         self.filename = filename
+        self.do_not_expire = do_not_expire
         self.records: dict[str, ItemRustDatabaseRecord] = {}
 
     def is_empty(self):
@@ -70,6 +78,10 @@ class ItemRustDatabase:
 
         if not self.has_record(name):
             raise AttributeError("Key '" + name + "' is not in database")
+
+        if self.do_not_expire:
+            print(name + " isexpired: False (do_not_expire mode turned ON)")
+            return True
 
         record = self.records[name]
         is_record_expired = bool(record.calc_expiry_date() < datetime.now())

@@ -34,7 +34,7 @@ class ItemRust:
             raise AttributeError("Database has to be instance of ", ItemRustDatabase.__name__)
         cls.database: ItemRustDatabase = database
 
-    def __init__(self, name, quantity=1, price_rchshop=None, price_bet=None):
+    def __init__(self, name, quantity=1, price_rchshop=None, price_rch_bet=None):
         """
 
         :param name: Name of an item (to be found through scmm api)
@@ -43,13 +43,13 @@ class ItemRust:
         :type quantity: int
         :param price_rchshop: Buy price in rustchance shop
         :type price_rchshop: float | None
-        :param price_bet: Price on rustchance for coinflip/jackpot bets
-        :type price_bet: float | None
+        :param price_rch_bet: Price on rustchance for coinflip/jackpot bets
+        :type price_rch_bet: float | None
         """
         self.name = name
         self.hash_name = None
         self.price_rchshop: float = price_rchshop
-        self.price_bet: float = price_bet
+        self.price_bet: float = price_rch_bet
 
         self.all_success = False
 
