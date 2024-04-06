@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1237da8c-d48a-4049-b376-7b095970cd53" name="Changes" comment="Added do_not_expire mode to Database">
+    <list default="true" id="1237da8c-d48a-4049-b376-7b095970cd53" name="Changes" comment="Added do_not_expire mode to Database (fix)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ItemRustDatabase.py" beforeDir="false" afterPath="$PROJECT_DIR$/ItemRustDatabase.py" afterDir="false" />
     </list>
@@ -142,7 +142,15 @@
       <option name="project" value="LOCAL" />
       <updated>1712396495167</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Added do_not_expire mode to Database (fix)">
+      <option name="closed" value="true" />
+      <created>1712443960857</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1712443960857</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -153,6 +161,7 @@
     <MESSAGE value="Added PriceType enum and support for buy/sell price in calc_value()&#10;Added guards for setting session and database&#10;Added docs and some type hints&#10;Refactoring" />
     <MESSAGE value="Cosmetics" />
     <MESSAGE value="Added do_not_expire mode to Database" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added do_not_expire mode to Database" />
+    <MESSAGE value="Added do_not_expire mode to Database (fix)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added do_not_expire mode to Database (fix)" />
   </component>
 </project>

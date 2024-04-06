@@ -69,7 +69,7 @@ class ItemRustDatabase:
     def has_actual_record(self, name):
         """ If the item in the database and has not expired"""
         has_actual_record = bool(self.has_record(name) and not self.is_record_expired(name))
-        print(name + " has_actual_record: " + str(has_actual_record))
+        #print(name + " has_actual_record: " + str(has_actual_record))
         return has_actual_record
 
     def is_record_expired(self, name):
@@ -96,7 +96,7 @@ class ItemRustDatabase:
         """ Assigns data from database to itemrust.
         Raises AttributeError if itemrust is not in database"""
 
-        print("assigning data to " + itemrust.name)
+        #print("assigning data to " + itemrust.name)
         if not self.has_record(itemrust.name):
             raise AttributeError("Key '" + itemrust.name + "' is not in database")
 
