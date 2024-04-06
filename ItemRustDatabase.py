@@ -81,7 +81,7 @@ class ItemRustDatabase:
 
         if self.do_not_expire:
             print(name + " isexpired: False (do_not_expire mode turned ON)")
-            return True
+            return False
 
         record = self.records[name]
         is_record_expired = bool(record.calc_expiry_date() < datetime.now())
