@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1237da8c-d48a-4049-b376-7b095970cd53" name="Changes" comment="Added do_not_expire mode to Database (fix)">
+    <list default="true" id="1237da8c-d48a-4049-b376-7b095970cd53" name="Changes" comment="Less verbose">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ItemRustDatabase.py" beforeDir="false" afterPath="$PROJECT_DIR$/ItemRustDatabase.py" afterDir="false" />
     </list>
@@ -22,6 +22,10 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/ItemRust.py" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/ItemRustDatabase.py" root0="SKIP_INSPECTION" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
@@ -150,7 +154,15 @@
       <option name="project" value="LOCAL" />
       <updated>1712443960857</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Less verbose">
+      <option name="closed" value="true" />
+      <created>1712446148512</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1712446148512</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -162,6 +174,7 @@
     <MESSAGE value="Cosmetics" />
     <MESSAGE value="Added do_not_expire mode to Database" />
     <MESSAGE value="Added do_not_expire mode to Database (fix)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added do_not_expire mode to Database (fix)" />
+    <MESSAGE value="Less verbose" />
+    <option name="LAST_COMMIT_MESSAGE" value="Less verbose" />
   </component>
 </project>

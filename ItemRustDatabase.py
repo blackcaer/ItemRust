@@ -5,7 +5,7 @@ import jsonpickle
 import json
 
 from ItemRustDatabaseRecord import ItemRustDatabaseRecord
-
+import asyncio
 
 class ItemRustDatabase:
     def __init__(self, filename, do_not_expire=False):
@@ -51,6 +51,17 @@ class ItemRustDatabase:
             with open(self.filename, 'w') as f:
                 json_data = jsonpickle.encode(self.records)
                 f.write(json_data)
+            print("Database saved")
+        else:
+            print("Not saving database - empty")
+    async def save_database_async(self):
+        """ Save self.records to file asynchronously"""
+        if not self.is_empty():
+            print("Saving database async")
+            async with open(self.filename, 'w') as f:
+                json_data = jsonpickle.encode(self.records)
+                await f.write(json_data)
+            print("Database saved")
         else:
             print("Not saving database - empty")
 
