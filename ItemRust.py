@@ -17,6 +17,7 @@ class ItemRust:
 
     session: aiohttp.ClientSession = None
     database: ItemRustDatabase = None
+    item_updating_semaphores = dict()
 
     class PriceType(Enum):
         PRICE_BUY = 1
@@ -83,15 +84,34 @@ class ItemRust:
         if self.database is None:
             raise RuntimeError("Database is not set")
 
-        has_actual_record = self.database.has_actual_record(self.name)
-        if has_actual_record:
-            # Take data from db
-            print("Reading data from DB for " + self.name)
-            self.fromDB = True
-            self.database.assign_data_to(self)
+        def try_load_actual_record():
+            has_actual_record = self.database.has_actual_record(self.name)
+            if has_actual_record:
+                # Take data from db
+                print("Reading data from DB for " + self.name)
+                self.fromDB = True
+                self.database.assign_data_to(self)
+                return True
+            return False
 
+        if try_load_actual_record():
             return
+
+        if self.name not in ItemRust.item_updating_semaphores:
+            # ItemRust.currently_updating.add(self.name)
+            ItemRust.item_updating_semaphores[self.name] = asyncio.Semaphore(0)
+
         else:
+            sem: asyncio.Semaphore = ItemRust.item_updating_semaphores[self.name]
+            await sem.acquire()
+            if not try_load_actual_record():
+                print("FAILED TO LOAD DB AFTER ACQUIRING SEMAPHORE ")
+            else:
+                print("SUCCEED TO LOAD DB AFTER ACQUIRING SEMAPHORE ")
+                sem.release()
+                return
+
+        try:
             self.fromDB = False
 
         phsm = await self._fetch_pricehistory_sm_async(100)
@@ -105,49 +125,56 @@ class ItemRust:
         else:
             print(f"Price history errors ({self.name}): " + str(phsm.errors))
 
-        # DO NOT DELETE, might need that in the future
-        """if shsm.success:
-            self.sale_offers_sm = shsm.data
-            print(f"Sales histogram success ({self.name})")
-
-            if len(self.sale_offers_sm["items"]) > 0:
-                self.price_sm = self.sale_offers_sm["items"][0]['price']
+            # DO NOT DELETE, might need that in the future
+            """if shsm.success:
+                self.sale_offers_sm = shsm.data
+                print(f"Sales histogram success ({self.name})")
+    
+                if len(self.sale_offers_sm["items"]) > 0:
+                    self.price_sm = self.sale_offers_sm["items"][0]['price']
+                else:
+                    print(f"Warning: shsm is empty ({self.name})")
             else:
-                print(f"Warning: shsm is empty ({self.name})")
-        else:
-            print(f"Sales histogram errors ({self.name}): " + str(shsm.errors))"""
+                print(f"Sales histogram errors ({self.name}): " + str(shsm.errors))"""
 
-        if iteminfo.success:
-            self.iteminfo = iteminfo.data
-            print(f"Item info success ({self.name})")
-            self.price_sm = self.market_price_from_iteminfo("SteamCommunityMarket")
-            self.price_sp = self.market_price_from_iteminfo("Skinport")
-            if self.price_sm is None and phsm.success:
-                # If there's no SteamCommunityMarket in iteminfo, happens sometimes
-                self.price_sm = phsm.data[len(phsm.data) - 1]["median"] * 100  # Converting to standard format
-                print(f"No SteamCommunityMarket in iteminfo, assuming price_sm from price history ({self.name})")
+            if iteminfo.success:
+                self.iteminfo = iteminfo.data
+                print(f"Item info success ({self.name})")
+                self.price_sm = self.market_price_from_iteminfo("SteamCommunityMarket")
+                self.price_sp = self.market_price_from_iteminfo("Skinport")
+                if self.price_sm is None and phsm.success:
+                    # If there's no SteamCommunityMarket in iteminfo, happens sometimes
+                    self.price_sm = phsm.data[len(phsm.data) - 1]["median"] * 100  # Converting to standard format
+                    print(f"No SteamCommunityMarket in iteminfo, assuming price_sm from price history ({self.name})")
 
-            # Name with proper case
-            self.hash_name = self.iteminfo["nameHash"].strip()
+                # Name with proper case
+                self.hash_name = self.iteminfo["nameHash"].strip()
 
-        else:
-            print(f"Item info errors ({self.name}): " + str(iteminfo.errors))
+            else:
+                print(f"Item info errors ({self.name}): " + str(iteminfo.errors))
 
-        if phsm.success:
-            self.calc_phsm_values()
+            if phsm.success:
+                self.calc_phsm_values()
 
-        if phsm.success and iteminfo.success:  # and shsm.success
-            self.all_success = True
-            self.timestamp = dt.now()
-            print(self.name + " updated with status \nSUCCESS")
-        else:
-            self.all_success = False
-            print(self.name + " updated with status \nFAILURE")
+            if phsm.success and iteminfo.success:  # and shsm.success
+                self.all_success = True
+                self.timestamp = dt.now()
+                print(self.name + " updated with status \nSUCCESS")
+            else:
+                self.all_success = False
+                print(self.name + " updated with status \nFAILURE")
 
-        if not has_actual_record and self.all_success:
-            self.database.update_record(self)
+            if self.all_success:
+                self.database.update_record(self)
+            print(self.name,"ended")
+        finally:
+            if self.name in ItemRust.item_updating_semaphores:
+                sem: asyncio.Semaphore = ItemRust.item_updating_semaphores[self.name]
+                sem.release()
+                print(self.name,"release")
 
-        print()
+            else:
+                print(self.name, "not in dict wtf")
 
     def market_price_from_iteminfo(self, market_type="SteamCommunityMarket"):
         """ Returns market price from market_type using SCMM API.
