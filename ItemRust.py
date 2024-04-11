@@ -114,16 +114,21 @@ class ItemRust:
         try:
             self.fromDB = False
 
-        phsm = await self._fetch_pricehistory_sm_async(100)
-        iteminfo = await self._fetch_item_info_async()  # TODO run concurrently
-        # shsm = await self.get_sale_offers_sm_async()
+            #phsm = await self._fetch_pricehistory_sm_async(100)
+            #iteminfo = await self._fetch_item_info_async()
+            # shsm = await self.get_sale_offers_sm_async()
 
-        if phsm.success:
-            self.pricehistory_sm = phsm.data
+            phsm_task = asyncio.create_task(self._fetch_pricehistory_sm_async(100))
+            iteminfo_task = asyncio.create_task(self._fetch_item_info_async())
+            phsm = await phsm_task
+            iteminfo = await iteminfo_task
 
-            print(f"Price history success ({self.name})")
-        else:
-            print(f"Price history errors ({self.name}): " + str(phsm.errors))
+            if phsm.success:
+                self.pricehistory_sm = phsm.data
+
+                print(f"Price history success ({self.name})")
+            else:
+                print(f"Price history errors ({self.name}): " + str(phsm.errors))
 
             # DO NOT DELETE, might need that in the future
             """if shsm.success:
