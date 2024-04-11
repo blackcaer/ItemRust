@@ -171,15 +171,12 @@ class ItemRust:
 
             if self.all_success:
                 self.database.update_record(self)
-            print(self.name,"ended")
+
         finally:
             if self.name in ItemRust.item_updating_semaphores:
                 sem: asyncio.Semaphore = ItemRust.item_updating_semaphores[self.name]
                 sem.release()
-                print(self.name,"release")
 
-            else:
-                print(self.name, "not in dict wtf")
 
     def market_price_from_iteminfo(self, market_type="SteamCommunityMarket"):
         """ Returns market price from market_type using SCMM API.
